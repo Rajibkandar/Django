@@ -1,0 +1,110 @@
+{% extends 'basic.html' %}
+{% load static %}
+  <title>Hello, world!</title>
+{% block body %}
+  <div class="container">
+    <div class="col my-4">
+      <h2>review product</h2>
+      <div class="my-4">
+        <ul class="list-group" id="items">
+        </ul>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mt-3">
+            <li class="breadcrumb-item active" aria-current="page">cart total is <b>Rs <span
+                  id="totalprice"></b></span>enter your details to place your order</li>
+          </ol>
+        </nav>
+      </div>
+
+    </div>
+    <div class="col my-4">
+      <h2>enter details</h2>
+      <form action="/checkoutpage/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="itemsJson" id="itemsJson">
+        <input type="hidden" name="amount" id="amount">
+        <input type="hidden" name="persnalcart" id="persnalcart">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="validationDefault01">name</label>
+            <input type="text" class="form-control" id="validationDefault01" name="name" placeholder="Enter name" required>
+          </div>
+        </div>
+        <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="validationDefault02">email</label>
+          <input type="email" class="form-control" id="validationDefault02" name="email" placeholder="enter email" required>
+        </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="validationDefault03">Address</label>
+            <input type="text" class="form-control" id="validationDefault03" name="address" placeholder="Enter address" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="validationDefault04">City</label>
+            <input type="text" class="form-control" id="validationDefault04" name="city" placeholder="enter city" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="validationDefault05">State</label>
+            <input type="text" class="form-control" name="state" placeholder="enter state" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="validationDefault06">Zip</label>
+            <input type="text" class="form-control" id="validationDefault06" name="zip_code" placeholder="enter zip code" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="validationDefault1">phone</label>
+            <input type="tel" class="form-control" id="validationDefault07" name="phone" placeholder="enter your phone number excluding +91" required>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="rzp-button1" type="submit">Place order</button>
+      </form>
+    </div>
+  </div>
+{% block javascript %}
+  <script>
+    
+    if (localStorage.getItem('cart') == null) {
+      var cart = {}
+    }
+    else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+    }
+    console.log(cart);
+    var sum = 0;
+    var totalprice = 0;
+    if ($.isEmptyObject(cart)) {
+      mystr = `<h1>your cart is empty</h1>`
+      $('#items').append(mystr);
+    }
+    else {
+      for (item in cart) {
+        let name = cart[item][1];
+        let qty = cart[item][0];
+        let itemprice = cart[item][2];
+        sum = sum + qty;
+        totalprice = totalprice + qty * itemprice
+        mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                      ${name}
+                      <span class="badge badge-primary badge-pill">${qty}</span>
+                    </li>`
+        $('#items').append(mystr);
+      }
+    }
+    document.getElementById('cart').innerHTML = sum;
+    console.log(sum);
+    $('#persnalcart').attr('value',sum)
+    document.getElementById('totalprice').innerHTML = totalprice;
+    console.log(cart);
+    $('#itemsJson').val(JSON.stringify(cart));
+    {% if thank %}
+    alert('thanks for order your order id is {{id}}');
+    localStorage.clear();
+    document.location = "http://127.0.0.1:8000/"
+    {% endif %}
+$('#amount').val($('#totalprice').html())
+  </script>
+
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+    integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+    crossorigin="anonymous"></script>
+  <title>
+    {% block title %}{% endblock %}
+  </title>
+  {% block css %}
+
+  {% endblock %}
+
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">E-Store</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="http://127.0.0.1:8000">Home</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="http://127.0.0.1:8000/contact/">Contact</a>
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link " href="http://127.0.0.1:8000/tracker/">Track order</a>
+        </li>
+      </ul>
+      <div class="ml-auto form-inline">
+        <form method="get" action="/search/" class="my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search"
+            id="search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+        </form>
+        <button type="button" class="btn btn-secondary mx-2" id="popcart" data-container="body" data-toggle="popover"
+          data-placement="bottom" data-html="true" data-content="abcd">
+          cart(<span id="cart">0</span>)</button>
+      </div>
+      {% if user.is_authenticated %}
+      <ul class="navbar-nav mr-2">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-expanded="false">
+            {{request.user}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="logout/">logout</a>
+        </li>
+      </ul>
+      {% else %}
+      <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#signup">
+        signup
+      </button>
+      <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#login">
+        login
+      </button>
+
+      {% endif %}
+    </div>
+  </nav>
+  {% for message in messages %}
+  <div class="alert alert-{{message.tags}} mb-0 alert-dismissible fade show" role="alert">
+    <strong>Message: </strong>{{message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  {% endfor %}
+  <!-- Button trigger modal -->
+
+
+  <!-- login -->
+  <div class="modal fade" id="signup" tabindex="-1" aria-labelledby="signup" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signup">signup</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="/signup/">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="username">username</label>
+              <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp"
+                placeholder="enter username" required>
+            </div>
+            <div class="form-group">
+              <label for="firstname">first name</label>
+              <input type="text" class="form-control" id="firstname" name="firstname" placeholder="enter first name" 
+              required>
+              <label for="lastname">last name</label>
+              <input type="text" class="form-control" id="lastname" name="lastname" placeholder="enter last name"
+                required>
+            </div>
+            <div class="form-group">
+              <label for="email">email</label>
+              <input type="email" class="form-control" id="signupemail" name="signupemail" placeholder="enter email"
+                required>
+            </div>
+            <div class="form-group">
+              <label for="password1">password</label>
+              <input type="password" class="form-control" id="password1" name="password1" placeholder="enter password"
+                required>
+            </div>
+            <div class="form-group">
+              <label for="password2">password</label>
+              <input type="password" class="form-control" id="password2" name="password2"
+                placeholder="enter password again" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="login" tabindex="-1" aria-labelledby="login" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="login">login</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="login/" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="username">username</label>
+              <input type="text" class="form-control" id="loginusername" name="loginusername"
+                aria-describedby="emailHelp" placeholder="enter username">
+            </div>
+            <div class="form-group">
+              <label for="password3">password</label>
+              <input type="password3" class="form-control" id="password3" name="loginpassword"
+                placeholder="enter password">
+            </div>
+            <button type="submit" class="btn btn-primary">login</button>
+          </form>
+
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+  {% block body %}
+
+
+
+
+
+  {% block javascript %}{% endblock %}
+
+
+  {% endblock %}
+  <footer class="text-center text-lg-start bg-dark text-white">
+    <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+      <div class="me-5 d-none d-lg-block">
+        <span>Get connected with us on social networks:</span>
+      </div>
+      <div>
+        <a href="" class="me-4 text-reset">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="" class="me-4 text-reset">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="" class="me-4 text-reset">
+          <i class="fab fa-google"></i>
+        </a>
+        <a href="" class="me-4 text-reset">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="" class="me-4 text-reset">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="" class="me-4 text-reset">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+    </section>
+    <section>
+      <div class="container text-center text-md-start mt-5">
+        <div class="row mt-3">
+          <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+            <h6 class="text-uppercase fw-bold mb-4">
+              <i class="fas fa-gem me-3"></i>E-Store
+            </h6>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Numquam, nulla?</p>
+          </div>
+          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+            <h6 class="text-uppercase fw-bold mb-4"> Useful links</h6>
+            <p><a href="http://127.0.0.1:8000/" class="text-reset">Home</a></p>
+            <p><a href="http://127.0.0.1:8000/contact" class="text-reset">Contact</a></p>
+            <p><a href="http://127.0.0.1:8000/tracker" class="text-reset">Track order</a></p>
+          </div>
+          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+            <h6 class="text-uppercase fw-bold mb-4">Useful links</h6>
+            <p><a href="" class="text-reset">Twitter</a></p>
+            <p><a href="" class="text-reset">Linked in</a></p>
+          </div>
+          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+            <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+            <p><i class="fas fa-home me-3"></i> Amritsar ,Punjab ,India</p>
+            <p> <i class="fas fa-envelope me-3"></i>info@gmail.com</p>
+            <p><i class="fas fa-phone me-3"></i>+919876543210</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+      © 2022 Copyright: All Copyright Reserved
+    </div>
+  </footer>
+</body>
+
+</html>
