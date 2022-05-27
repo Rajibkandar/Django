@@ -24,6 +24,8 @@ def index(request):
 def searchmatch(query,item):
     if query in item.product_description.lower() or query in item.product_name.lower() or query in item.category.lower():
         return True
+    elif query in item.product_description.upper() or query in item.product_name.upper() or query in item.category.upper():
+        return True
     else:
         return False
 def search(request):

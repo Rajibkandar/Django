@@ -5,7 +5,7 @@ from django.db import models
 class product(models.Model):
     product_id=models.AutoField
     product_name=models.CharField(max_length=30)
-    product_description=models.CharField(max_length=250)
+    product_description=models.TextField(max_length=250000)
     price=models.IntegerField()
     category=models.CharField(max_length=100)
     product_date=models.DateField()
