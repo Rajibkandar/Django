@@ -49,8 +49,8 @@
                     encode: true
                 })
                     .done(function (data) {
-                        console.log(data);
-                        data = JSON.parse(data);
+                        $('#citems').empty();
+                        data=JSON.parse(data);
                         if (data['status'] == 'success') {
                             updates=data['updates'];
                             for (i = 0; i < updates.length; i++) {
@@ -71,7 +71,7 @@
                     </li>`
                     $('#citems').append(mystr);
                 }
-                    } 
+            }
                     else {
                             mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
                    please enter order Id and Email correctly

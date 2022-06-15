@@ -58,7 +58,14 @@
             <input type="tel" class="form-control" id="validationDefault07" name="phone" placeholder="enter your phone number excluding +91" required>
           </div>
         </div>
-        <button class="btn btn-primary" id="rzp-button1" type="submit">Place order</button>
+        {% if user.is_authenticated %}
+        <button class="btn btn-primary" type="submit">Place order</button>
+        {% else %}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signup">
+          place order
+        </button>
+        {% comment %} <button class="btn btn-primary" type="submit">Place order</button> {% endcomment %}
+        {% endif %}
       </form>
     </div>
   </div>

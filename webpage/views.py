@@ -1,4 +1,3 @@
-from email import message
 from math import ceil
 from django.shortcuts import render,HttpResponse,redirect
 from .models import product,Contact,Order,Orderupdate
@@ -7,7 +6,6 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 # Create your views here.
-
 def index(request):
     allprods=[]
     catprods=product.objects.values('category', 'id')
@@ -19,8 +17,21 @@ def index(request):
         allprods.append([prod,range(1,nslides),nslides])
         params={'allprods':allprods}
     return render(request,'index.html',params)
+def allproducts(request,name):
+    allprods=[]
+    catprods=product.objects.values('category', 'id')#it gives all category name and id of all product in dictionary
+    cats={item['category'] for item in catprods }  #it gives all the category in dictionary
+    for cat in range(0,1):
+        #cat gives name of category without dictionary
+        prod=product.objects.filter(category=name) #it gives the name of all product
+        allprods.append([prod,range(0,1),1])
+        params={'allprods':allprods}
+    return render(request,'allproducts.html',params)
 
-    
+def productpage(request,myid):
+    products=product.objects.filter(id=myid)
+    return render(request,'product.html',{'product':products[0]})
+
 def searchmatch(query,item):
     if query in item.product_description.lower() or query in item.product_name.lower() or query in item.category.lower():
         return True
@@ -45,10 +56,7 @@ def search(request):
         params={'msg':" please make sure you enter relevant search query"}
     return render(request,'search.html',params)
 
-def productpage(request,myid):
-    products=product.objects.filter(id=myid)
-    return render(request,'product.html',{'product':products[0]})
-
+    
 def contact(request):
     if request.method=="POST":
         name=request.POST.get('name','')
@@ -76,7 +84,8 @@ def checkoutpage(request):
         zip_code=request.POST.get('zip_code','')
         phone=request.POST.get('phone','')
         persnalcart=request.POST.get('persnalcart','')
-        integerpersnalcart=int(persnalcart)
+        print(persnalcart)
+        # integerpersnalcart=int(persnalcart)
         if len(name)<3:
             print(name)
             messages.error(request,"please name must be frester than 3 words")
@@ -90,8 +99,8 @@ def checkoutpage(request):
             messages.error(request,"enter valid zip code")
         elif len(phone)<10 or len(phone)>10:
             messages.error(request,"enter valid phone number")
-        elif integerpersnalcart<1:
-            messages.error(request,"your cart is empty")
+        # elif integerpersnalcart<1:
+        #     messages.error(request,"your cart is empty")
         else:
             order=Order(item_json=item_json,name=name,amount=amount,email=email,address=address,city=city,state=state,zip_code=zip_code,phone=phone)
             order.save()
@@ -100,7 +109,6 @@ def checkoutpage(request):
             thank=True
             id=order.order_id
             return render(request,'checkoutpage.html',{'thank':thank,'id':id})
-        
     return render(request,'checkoutpage.html')
 def tracker(request):
     if request.method=="POST":
